@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotificationController } from './notification.controller';
 import { ProcessNotificationUseCase } from '../../application/use-cases/process-notification.use-case';
 import { appConfig } from '../../infrastructure/config/app.config';
+import { MetricsService } from '../../infrastructure/metrics/metrics.service';
 import { RmqContext } from '@nestjs/microservices';
 import { SendNotificationDTO } from '../../application/dtos/send-notification.dto';
 import { NotificationChannel } from '../../domain/entities/notification-payload.entity';
@@ -38,6 +39,14 @@ describe('NotificationController (Retries & DLQ)', () => {
         {
           provide: appConfig.KEY,
           useValue: mockConfig,
+        },
+        {
+          provide: MetricsService,
+          useValue: {
+            recordSuccess: jest.fn(),
+            recordFailure: jest.fn(),
+            recordRetry: jest.fn(),
+          },
         },
       ],
     }).compile();

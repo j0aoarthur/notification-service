@@ -8,6 +8,7 @@ import {
 import { Channel, Message } from 'amqplib';
 import { SendNotificationDTO } from '../../application/dtos/send-notification.dto';
 import { ProcessNotificationUseCase } from '../../application/use-cases/process-notification.use-case';
+import { MetricsService } from '../../infrastructure/metrics/metrics.service';
 import { Inject } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { appConfig } from '../../infrastructure/config/app.config';
@@ -33,6 +34,7 @@ export class NotificationController {
 
   constructor(
     private readonly processNotificationUseCase: ProcessNotificationUseCase,
+    private readonly metricsService: MetricsService,
     @Inject(appConfig.KEY)
     private readonly config: ConfigType<typeof appConfig>,
   ) {}
@@ -79,6 +81,7 @@ export class NotificationController {
       this.logger.error(
         `Limite de retentativas excedido (${currentRetryCount}/${this.config.rabbitmq.maxRetries}). Roteando para DLQ | templateId: ${dto.templateId} | channel: ${dto.channel} | recipient: ${maskedRecipient}`,
       );
+      this.metricsService.recordFailure(dto.channel, dto.templateId);
       channel.sendToQueue(this.config.rabbitmq.deadQueue, originalMessage.content, {
         headers: originalMessage.properties.headers,
       });
@@ -93,6 +96,7 @@ export class NotificationController {
     try {
       await this.processNotificationUseCase.execute(dto);
       channel.ack(originalMessage);
+      this.metricsService.recordSuccess(dto.channel, dto.templateId);
       this.logger.log(
         `Notificação processada com sucesso | templateId: ${dto.templateId} | channel: ${dto.channel}`,
       );
@@ -103,6 +107,7 @@ export class NotificationController {
       this.logger.error(
         `Falha ao processar notificação | templateId: ${dto.templateId} | channel: ${dto.channel} | recipient: ${maskedRecipient} | erro: ${errorMessage}`,
       );
+      this.metricsService.recordRetry(dto.channel, dto.templateId);
 
       // nack com requeue: false → o broker encaminha para a notifications_retry_queue via DLX
       channel.nack(originalMessage, false, false);

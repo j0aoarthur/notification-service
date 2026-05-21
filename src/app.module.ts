@@ -10,15 +10,14 @@ import { DeliveryProviderRegistry } from './application/services/delivery-provid
 import { DeliveryProvider } from './domain/interfaces/delivery-provider.abstract';
 import { NodemailerEmailProvider } from './infrastructure/providers/email/nodemailer-email.provider';
 import { LogSmsProvider } from './infrastructure/providers/sms/log-sms.provider';
+import { MetricsModule } from './infrastructure/metrics/metrics.module';
 
 /**
  * Módulo raiz da aplicação.
  *
- * Importações previstas nas próximas fases:
- *   - Phase 4 (US2): HandlebarsTemplateEngine provider
- *   - Phase 5 (US3): NodemailerEmailProvider, LogSmsProvider, DeliveryProviderRegistry
- *
- * Referência: specs/001-eda-notification-service/plan.md
+ * FR-005, SC-004: O sistema suporta provedores de entrega plugáveis.
+ * O `DeliveryProviderRegistry` recebe uma coleção de provedores (graças ao `multi: true`)
+ * e roteia a notificação para o provedor apropriado em runtime, sem alterar a regra de negócio.
  */
 @Module({
   imports: [
@@ -26,6 +25,7 @@ import { LogSmsProvider } from './infrastructure/providers/sms/log-sms.provider'
       isGlobal: true,
       load: [appConfig],
     }),
+    MetricsModule,
     RabbitmqModule,
   ],
   controllers: [NotificationController],
