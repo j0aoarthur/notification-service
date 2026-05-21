@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { SendNotificationDTO } from '../dtos/send-notification.dto';
-import { TemplateEngine } from '../../domain/interfaces/template-engine';
+import { TemplateEngine } from '../../domain/interfaces/template-engine.abstract';
 import { DeliveryProviderRegistry } from '../services/delivery-provider-registry.service';
 
 /**

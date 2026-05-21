@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { appConfig } from '../../config/app.config';
-import { DeliveryProvider } from '../../../domain/interfaces/delivery-provider';
+import { DeliveryProvider } from '../../../domain/interfaces/delivery-provider.abstract';
 import { NotificationChannel } from '../../../domain/entities/notification-payload.entity';
 import { CompiledMessage } from '../../../domain/value-objects/compiled-message.value-object';
 

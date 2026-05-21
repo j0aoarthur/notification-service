@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DeliveryProvider } from '../../../domain/interfaces/delivery-provider';
+import { DeliveryProvider } from '../../../domain/interfaces/delivery-provider.abstract';
 import { NotificationChannel } from '../../../domain/entities/notification-payload.entity';
 import { CompiledMessage } from '../../../domain/value-objects/compiled-message.value-object';
 

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeliveryProviderRegistry } from './delivery-provider-registry.service';
-import { DeliveryProvider } from '../../domain/interfaces/delivery-provider';
+import { DeliveryProvider } from '../../domain/interfaces/delivery-provider.abstract';
 import { NotificationChannel } from '../../domain/entities/notification-payload.entity';
 import { UnsupportedChannelException } from '../exceptions/unsupported-channel.exception';
 

@@ -4,10 +4,10 @@ import { appConfig } from './infrastructure/config/app.config';
 import { RabbitmqModule } from './infrastructure/messaging/rabbitmq.module';
 import { NotificationController } from './presentation/controllers/notification.controller';
 import { ProcessNotificationUseCase } from './application/use-cases/process-notification.use-case';
-import { TemplateEngine } from './domain/interfaces/template-engine';
+import { TemplateEngine } from './domain/interfaces/template-engine.abstract';
 import { HandlebarsTemplateEngine } from './infrastructure/template-engine/handlebars-template-engine.service';
 import { DeliveryProviderRegistry } from './application/services/delivery-provider-registry.service';
-import { DeliveryProvider } from './domain/interfaces/delivery-provider';
+import { DeliveryProvider } from './domain/interfaces/delivery-provider.abstract';
 import { NodemailerEmailProvider } from './infrastructure/providers/email/nodemailer-email.provider';
 import { LogSmsProvider } from './infrastructure/providers/sms/log-sms.provider';
 
