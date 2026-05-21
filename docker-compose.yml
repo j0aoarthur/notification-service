@@ -1,0 +1,54 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: notification-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: notification-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: notification-service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      RABBITMQ_URI: amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq:5672
+      RABBITMQ_QUEUE: ${RABBITMQ_QUEUE:-notifications_queue}
+      RABBITMQ_RETRY_QUEUE: ${RABBITMQ_RETRY_QUEUE:-notifications_retry_queue}
+      RABBITMQ_DEAD_QUEUE: ${RABBITMQ_DEAD_QUEUE:-notifications_dead_queue}
+      RABBITMQ_RETRY_TTL_MS: ${RABBITMQ_RETRY_TTL_MS:-30000}
+      RABBITMQ_MAX_RETRIES: ${RABBITMQ_MAX_RETRIES:-5}
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      SMTP_USER: ""
+      SMTP_PASS: ""
+      SMTP_FROM: noreply@notification-service.local
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:dev
+
+volumes:
+  rabbitmq_data:
