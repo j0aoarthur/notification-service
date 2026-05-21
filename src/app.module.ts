@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Module, ClassProvider } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { appConfig } from './infrastructure/config/app.config';
 import { RabbitmqModule } from './infrastructure/messaging/rabbitmq.module';
 import { NotificationController } from './presentation/controllers/notification.controller';
 import { ProcessNotificationUseCase } from './application/use-cases/process-notification.use-case';
-import { TEMPLATE_ENGINE } from './domain/interfaces/template-engine.interface';
+import { TemplateEngine } from './domain/interfaces/template-engine';
 import { HandlebarsTemplateEngine } from './infrastructure/template-engine/handlebars-template-engine.service';
 import { DeliveryProviderRegistry } from './application/services/delivery-provider-registry.service';
-import { DELIVERY_PROVIDERS } from './domain/interfaces/delivery-provider.interface';
+import { DeliveryProvider } from './domain/interfaces/delivery-provider';
 import { NodemailerEmailProvider } from './infrastructure/providers/email/nodemailer-email.provider';
 import { LogSmsProvider } from './infrastructure/providers/sms/log-sms.provider';
 
@@ -15,8 +15,8 @@ import { LogSmsProvider } from './infrastructure/providers/sms/log-sms.provider'
  * Módulo raiz da aplicação.
  *
  * Importações previstas nas próximas fases:
- *   - Phase 4 (US2): HandlebarsTemplateEngine provider (token: TEMPLATE_ENGINE)
- *   - Phase 5 (US3): NodemailerEmailProvider, LogSmsProvider, DeliveryProviderRegistry (token: DELIVERY_PROVIDERS)
+ *   - Phase 4 (US2): HandlebarsTemplateEngine provider
+ *   - Phase 5 (US3): NodemailerEmailProvider, LogSmsProvider, DeliveryProviderRegistry
  *
  * Referência: specs/001-eda-notification-service/plan.md
  */
@@ -32,18 +32,19 @@ import { LogSmsProvider } from './infrastructure/providers/sms/log-sms.provider'
   providers: [
     ProcessNotificationUseCase,
     {
-      provide: TEMPLATE_ENGINE,
+      provide: TemplateEngine,
       useClass: HandlebarsTemplateEngine,
     },
-    NodemailerEmailProvider,
-    LogSmsProvider,
     {
-      provide: DELIVERY_PROVIDERS,
-      useFactory: (emailProvider: NodemailerEmailProvider, smsProvider: LogSmsProvider) => {
-        return [emailProvider, smsProvider];
-      },
-      inject: [NodemailerEmailProvider, LogSmsProvider],
-    },
+      provide: DeliveryProvider,
+      useClass: NodemailerEmailProvider,
+      multi: true,
+    } as ClassProvider,
+    {
+      provide: DeliveryProvider,
+      useClass: LogSmsProvider,
+      multi: true,
+    } as ClassProvider,
     DeliveryProviderRegistry,
   ],
 })

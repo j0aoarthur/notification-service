@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { SendNotificationDTO } from '../dtos/send-notification.dto';
-import { TEMPLATE_ENGINE } from '../../domain/interfaces/template-engine.interface';
-import type { TemplateEngine } from '../../domain/interfaces/template-engine.interface';
+import { TemplateEngine } from '../../domain/interfaces/template-engine';
 import { DeliveryProviderRegistry } from '../services/delivery-provider-registry.service';
 
 /**
@@ -24,7 +23,6 @@ export class ProcessNotificationUseCase {
   private readonly logger = new Logger(ProcessNotificationUseCase.name);
 
   constructor(
-    @Inject(TEMPLATE_ENGINE)
     private readonly templateEngine: TemplateEngine,
     private readonly registry: DeliveryProviderRegistry,
   ) {}

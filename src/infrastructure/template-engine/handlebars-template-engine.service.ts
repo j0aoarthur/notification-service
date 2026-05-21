@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as handlebars from 'handlebars';
 import matter from 'gray-matter';
-import { TemplateEngine } from '../../domain/interfaces/template-engine.interface';
+import { TemplateEngine } from '../../domain/interfaces/template-engine';
 import { NotificationChannel } from '../../domain/entities/notification-payload.entity';
 import { CompiledMessage } from '../../domain/value-objects/compiled-message.value-object';
 import { TemplateNotFoundException } from '../../application/exceptions/template-not-found.exception';

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeliveryProviderRegistry } from './delivery-provider-registry.service';
-import { DELIVERY_PROVIDERS, DeliveryProvider } from '../../domain/interfaces/delivery-provider.interface';
+import { DeliveryProvider } from '../../domain/interfaces/delivery-provider';
 import { NotificationChannel } from '../../domain/entities/notification-payload.entity';
 import { UnsupportedChannelException } from '../exceptions/unsupported-channel.exception';
 
@@ -26,7 +26,7 @@ describe('DeliveryProviderRegistry', () => {
       providers: [
         DeliveryProviderRegistry,
         {
-          provide: DELIVERY_PROVIDERS,
+          provide: DeliveryProvider,
           useValue: [mockEmailProvider, mockSmsProvider],
         },
       ],

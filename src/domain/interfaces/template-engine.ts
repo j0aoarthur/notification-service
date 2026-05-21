@@ -10,7 +10,7 @@ import { CompiledMessage } from '../value-objects/compiled-message.value-object'
  *
  * Referência: specs/001-eda-notification-service/data-model.md § TemplateEngine
  */
-export interface TemplateEngine {
+export abstract class TemplateEngine {
   /**
    * Carrega o template identificado por `templateId` do filesystem,
    * interpola as `variables` e retorna um `CompiledMessage` pronto para entrega.
@@ -21,7 +21,7 @@ export interface TemplateEngine {
    * @returns CompiledMessage com subject e body compilados
    * @throws {TemplateNotFoundException} Se o arquivo .hbs não for encontrado
    */
-  compile(
+  abstract compile(
     templateId: string,
     channel: NotificationChannel,
     variables: Record<string, unknown>,
@@ -29,5 +29,3 @@ export interface TemplateEngine {
   ): Promise<CompiledMessage>;
 }
 
-/** Token de injeção de dependência para o TemplateEngine */
-export const TEMPLATE_ENGINE = 'TEMPLATE_ENGINE';

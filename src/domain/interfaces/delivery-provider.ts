@@ -11,9 +11,9 @@ import { CompiledMessage } from '../value-objects/compiled-message.value-object'
  *
  * Referência: specs/001-eda-notification-service/data-model.md § DeliveryProvider
  */
-export interface DeliveryProvider {
+export abstract class DeliveryProvider {
   /** Canal de entrega que este provider implementa */
-  readonly channel: NotificationChannel;
+  abstract readonly channel: NotificationChannel;
 
   /**
    * Envia a mensagem compilada ao destinatário final via o canal correspondente.
@@ -21,14 +21,11 @@ export interface DeliveryProvider {
    *
    * @throws {Error} Se a entrega falhar (o mecanismo de retry via DLX tratará a falha)
    */
-  send(message: CompiledMessage): Promise<void>;
+  abstract send(message: CompiledMessage): Promise<void>;
 
   /**
    * Verifica se o provider está operacional.
    * Usado durante a inicialização do serviço para diagnóstico.
    */
-  isHealthy(): Promise<boolean>;
+  abstract isHealthy?(): Promise<boolean>;
 }
-
-/** Token de injeção de dependência para o array de providers registrados */
-export const DELIVERY_PROVIDERS = 'DELIVERY_PROVIDERS';

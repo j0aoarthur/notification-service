@@ -1,8 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import {
-  DELIVERY_PROVIDERS,
-  DeliveryProvider,
-} from '../../domain/interfaces/delivery-provider.interface';
+import { DeliveryProvider } from '../../domain/interfaces/delivery-provider';
 import { NotificationChannel } from '../../domain/entities/notification-payload.entity';
 import { UnsupportedChannelException } from '../exceptions/unsupported-channel.exception';
 import type { OnModuleInit } from '@nestjs/common';
@@ -21,7 +18,7 @@ export class DeliveryProviderRegistry implements OnModuleInit {
   private readonly providersMap = new Map<NotificationChannel, DeliveryProvider>();
 
   constructor(
-    @Inject(DELIVERY_PROVIDERS)
+    @Inject(DeliveryProvider)
     private readonly providers: DeliveryProvider[],
   ) {
     // Registra cada provider no mapa pelo seu canal
@@ -40,11 +37,13 @@ export class DeliveryProviderRegistry implements OnModuleInit {
 
     for (const provider of this.providers) {
       try {
-        const isHealthy = await provider.isHealthy();
-        if (isHealthy) {
-          this.logger.log(`Provider para canal '${provider.channel}' está SAUDÁVEL.`);
-        } else {
-          this.logger.warn(`Provider para canal '${provider.channel}' NÃO ESTÁ SAUDÁVEL.`);
+        if (typeof provider.isHealthy === 'function') {
+          const isHealthy = await provider.isHealthy();
+          if (isHealthy) {
+            this.logger.log(`Provider para canal '${provider.channel}' está SAUDÁVEL.`);
+          } else {
+            this.logger.warn(`Provider para canal '${provider.channel}' NÃO ESTÁ SAUDÁVEL.`);
+          }
         }
       } catch (error: unknown) {
         const err = error instanceof Error ? error.message : 'Desconhecido';
