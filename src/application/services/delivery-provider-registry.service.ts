@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { DeliveryProvider } from '../../domain/interfaces/delivery-provider.abstract';
 import { NotificationChannel } from '../../domain/entities/notification-payload.entity';
 import { UnsupportedChannelException } from '../exceptions/unsupported-channel.exception';
@@ -18,7 +18,6 @@ export class DeliveryProviderRegistry implements OnModuleInit {
   private readonly providersMap = new Map<NotificationChannel, DeliveryProvider>();
 
   constructor(
-    @Inject(DeliveryProvider)
     private readonly providers: DeliveryProvider[],
   ) {
     // Registra cada provider no mapa pelo seu canal

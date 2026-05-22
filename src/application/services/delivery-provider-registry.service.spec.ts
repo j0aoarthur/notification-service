@@ -1,4 +1,3 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { DeliveryProviderRegistry } from './delivery-provider-registry.service';
 import { DeliveryProvider } from '../../domain/interfaces/delivery-provider.abstract';
 import { NotificationChannel } from '../../domain/entities/notification-payload.entity';
@@ -9,7 +8,7 @@ describe('DeliveryProviderRegistry', () => {
   let mockEmailProvider: DeliveryProvider;
   let mockSmsProvider: DeliveryProvider;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockEmailProvider = {
       channel: NotificationChannel.EMAIL,
       send: jest.fn(),
@@ -22,17 +21,8 @@ describe('DeliveryProviderRegistry', () => {
       isHealthy: jest.fn().mockResolvedValue(false), // one unhealthy for coverage
     };
 
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        DeliveryProviderRegistry,
-        {
-          provide: DeliveryProvider,
-          useValue: [mockEmailProvider, mockSmsProvider],
-        },
-      ],
-    }).compile();
-
-    registry = module.get<DeliveryProviderRegistry>(DeliveryProviderRegistry);
+    // O registry recebe o array diretamente — sem DI do NestJS no teste unitário
+    registry = new DeliveryProviderRegistry([mockEmailProvider, mockSmsProvider]);
   });
 
   it('should be defined', () => {

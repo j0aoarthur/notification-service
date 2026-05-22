@@ -1,4 +1,4 @@
-import { Module, ClassProvider } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { appConfig } from './infrastructure/config/app.config';
 import { RabbitmqModule } from './infrastructure/messaging/rabbitmq.module';
@@ -7,7 +7,6 @@ import { ProcessNotificationUseCase } from './application/use-cases/process-noti
 import { TemplateEngine } from './domain/interfaces/template-engine.abstract';
 import { HandlebarsTemplateEngine } from './infrastructure/template-engine/handlebars-template-engine.service';
 import { DeliveryProviderRegistry } from './application/services/delivery-provider-registry.service';
-import { DeliveryProvider } from './domain/interfaces/delivery-provider.abstract';
 import { NodemailerEmailProvider } from './infrastructure/providers/email/nodemailer-email.provider';
 import { LogSmsProvider } from './infrastructure/providers/sms/log-sms.provider';
 import { MetricsModule } from './infrastructure/metrics/metrics.module';
@@ -16,8 +15,9 @@ import { MetricsModule } from './infrastructure/metrics/metrics.module';
  * Módulo raiz da aplicação.
  *
  * FR-005, SC-004: O sistema suporta provedores de entrega plugáveis.
- * O `DeliveryProviderRegistry` recebe uma coleção de provedores (graças ao `multi: true`)
- * e roteia a notificação para o provedor apropriado em runtime, sem alterar a regra de negócio.
+ * O `DeliveryProviderRegistry` é construído via factory, recebendo explicitamente
+ * todos os providers concretos e os agrupando em array — padrão seguro no NestJS
+ * para class tokens (multi:true não é confiável com abstract class como token).
  */
 @Module({
   imports: [
@@ -35,17 +35,18 @@ import { MetricsModule } from './infrastructure/metrics/metrics.module';
       provide: TemplateEngine,
       useClass: HandlebarsTemplateEngine,
     },
+    
+    // Providers concretos registrados individualmente
+    NodemailerEmailProvider,
+    LogSmsProvider,
     {
-      provide: DeliveryProvider,
-      useClass: NodemailerEmailProvider,
-      multi: true,
-    } as ClassProvider,
-    {
-      provide: DeliveryProvider,
-      useClass: LogSmsProvider,
-      multi: true,
-    } as ClassProvider,
-    DeliveryProviderRegistry,
+      provide: DeliveryProviderRegistry,
+      useFactory: (
+        email: NodemailerEmailProvider,
+        sms: LogSmsProvider,
+      ) => new DeliveryProviderRegistry([email, sms]),
+      inject: [NodemailerEmailProvider, LogSmsProvider],
+    },
   ],
 })
 export class AppModule {}

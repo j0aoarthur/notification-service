@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config';
+import { from } from 'rxjs';
 
 /**
  * Schema de configuração da aplicação.
@@ -24,6 +25,7 @@ export const appConfig = registerAs('app', () => ({
     user: process.env['SMTP_USER'] ?? '',
     pass: process.env['SMTP_PASS'] ?? '',
     from: process.env['SMTP_FROM'] ?? 'noreply@notification-service.local',
+    fromName: process.env['SMTP_FROM_NAME'] ?? 'notification-service.local',
   },
 }));
 

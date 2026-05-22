@@ -42,6 +42,7 @@ export class HandlebarsTemplateEngine implements TemplateEngine {
 
     // Extrai o front-matter (data) e o corpo do template (content)
     const { data: frontMatter, content: templateBody } = matter(fileContent);
+    
 
     // Compila os templates usando Handlebars (tanto para o body quanto para atributos como subject)
     const bodyCompiler = handlebars.compile(templateBody);
@@ -52,7 +53,7 @@ export class HandlebarsTemplateEngine implements TemplateEngine {
     // Se houver "subject" no front-matter, nós o compilamos também (para permitir {{firstName}} no assunto)
     if (frontMatter.subject && typeof frontMatter.subject === 'string') {
       const subjectCompiler = handlebars.compile(frontMatter.subject);
-      compiledSubject = subjectCompiler(variables);
+      compiledSubject = subjectCompiler(variables).trim();
     }
 
     return new CompiledMessage(recipient, channel, compiledSubject || null, compiledBody);

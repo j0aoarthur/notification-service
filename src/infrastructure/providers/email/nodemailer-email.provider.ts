@@ -34,8 +34,9 @@ export class NodemailerEmailProvider implements DeliveryProvider {
               user: smtpConfig.user,
               pass: smtpConfig.pass,
             }
-          : undefined,
+          : undefined
     });
+
   }
 
   /**
@@ -46,8 +47,12 @@ export class NodemailerEmailProvider implements DeliveryProvider {
    */
   async send(message: CompiledMessage): Promise<void> {
     try {
+      console.log('Recipient: ' + message.recipient);
+      console.log('Subject: ' + message.subject);
+
       await this.transporter.sendMail({
-        from: this.config.smtp.from,
+        // Formato padrão SMTP para nome customizado: "Nome de Exibição" <email@dominio.com>
+        from: `"${this.config.smtp.fromName}" <${this.config.smtp.from}>`,
         to: message.recipient,
         subject: message.subject ?? 'Sem Assunto',
         html: message.body,
