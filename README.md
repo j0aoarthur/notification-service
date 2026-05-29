@@ -30,7 +30,6 @@ O serviço segue os princípios do **Event-Driven Architecture (EDA)** e **Clean
 
 As instruções para rodar o serviço localmente (usando Docker Compose) encontram-se no documento de **Quickstart**.
 
-👉 [Acessar Guia Rápido (Quickstart)](./specs/001-eda-notification-service/quickstart.md)
+👉 [Acessar Guia Rápido (Quickstart)](./docs/quickstart.md)
 
 ---
-*Projeto gerado utilizando SpecKit e a ferramenta Antigravity.*
