@@ -121,6 +121,18 @@ O campo `senderId` nunca aceita um endereço de e-mail livre — apenas um ident
 
 Se `senderId` for omitido, ou for `"default"` sem entrada correspondente no arquivo, o serviço usa o remetente padrão configurado via `MAIL_FROM`/`MAIL_FROM_NAME`.
 
+### Provedor de Entrega de E-mail (SMTP ou Resend)
+
+A variável `EMAIL_PROVIDER` seleciona qual implementação concreta de `DeliveryProvider` entrega e-mails:
+
+- `EMAIL_PROVIDER=smtp` (padrão): usa Nodemailer contra o servidor configurado em `SMTP_*` (MailHog em dev).
+- `EMAIL_PROVIDER=resend`: usa a API HTTP do [Resend](https://resend.com) via SDK oficial. Exige `RESEND_API_KEY` definido — se ausente, o serviço falha no boot (fail-fast) em vez de cair silenciosamente para SMTP.
+
+Para obter uma API key: crie uma conta no [painel do Resend](https://resend.com/api-keys), gere uma chave e defina `RESEND_API_KEY=re_xxx`.
+
+> [!IMPORTANT]
+> O Resend só entrega e-mails a partir de um **domínio verificado** (com registros SPF e DKIM configurados na zona DNS via o painel do Resend). Todos os endereços cadastrados em `senders.json`, assim como `MAIL_FROM`, precisam pertencer a esse domínio verificado — caso contrário o envio falha.
+
 ### Integração com Cliente NestJS (Exemplo)
 
 Instale as dependências: `npm install @nestjs/microservices amqplib`
@@ -227,6 +239,8 @@ As configurações utilizam o injetor do NestJS (arquivo `app.config.ts`) de for
 | `MAIL_FROM` | Endereço do remetente padrão (precedência sobre `SMTP_FROM`) | `noreply@empresa.com` |
 | `MAIL_FROM_NAME` | Nome de exibição do remetente padrão (precedência sobre `SMTP_FROM_NAME`) | `Central de Notificações` |
 | `EMAIL_SENDERS_FILE` | Caminho opcional para sobrescrever `src/infrastructure/config/senders.json` | *vazio (usa o arquivo do repo)* |
+| `EMAIL_PROVIDER` | Provedor de entrega de e-mail: `smtp` ou `resend` | `smtp` |
+| `RESEND_API_KEY` | API key do Resend. **Obrigatório** quando `EMAIL_PROVIDER=resend` | *vazio* |
 
 ---
 

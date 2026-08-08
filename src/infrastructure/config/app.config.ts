@@ -32,6 +32,10 @@ export const appConfig = registerAs('app', () => ({
       process.env['SMTP_FROM_NAME'] ??
       'notification-service.local',
     sendersFile: process.env['EMAIL_SENDERS_FILE'] ?? '',
+    provider: process.env['EMAIL_PROVIDER'] ?? 'smtp', // 'smtp' | 'resend'
+  },
+  resend: {
+    apiKey: process.env['RESEND_API_KEY'] ?? '',
   },
 }));
 
