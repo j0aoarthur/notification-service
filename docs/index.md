@@ -104,9 +104,22 @@ Todo payload publicado na fila `notifications_queue` deve seguir o formato JSON 
 | `templateId` | `string` | **Obrigatório.** O ID do template (nome do arquivo `.hbs` sem extensão). |
 | `channel`    | `enum` | **Obrigatório.** `"EMAIL"` ou `"SMS"`. Define qual provedor de entrega rotear. |
 | `variables`  | `object` | **Obrigatório.** Variáveis de contexto interpoladas no template. (Dados PII - não logar). |
+| `senderId`   | `string` | **Opcional.** Identificador curto (`^[a-z0-9-]+$`) de uma identidade de remetente registrada. Ausente ⇒ usa o remetente padrão do serviço. Aplica-se apenas ao canal `EMAIL`. |
 
 > [!CAUTION]
 > Os campos `recipient` e `variables` contêm dados pessoais (PII - Política FR-007). Ao desenvolver integrações, certifique-se de omiti-los ou mascará-los nos seus logs de negócio.
+
+### Identidades de Remetente
+
+O campo `senderId` nunca aceita um endereço de e-mail livre — apenas um identificador curto que o serviço resolve contra o registry versionado em `src/infrastructure/config/senders.json`. Isso torna spoofing e injeção de cabeçalho SMTP estruturalmente impossíveis, já que nenhuma string de e-mail vinda do cliente chega ao envelope de entrega. Para adicionar uma nova identidade, um operador abre um PR revisado adicionando uma entrada ao arquivo, no formato:
+
+```json
+{
+  "suporte": { "address": "suporte@empresa.com", "name": "Equipe de Suporte" }
+}
+```
+
+Se `senderId` for omitido, ou for `"default"` sem entrada correspondente no arquivo, o serviço usa o remetente padrão configurado via `MAIL_FROM`/`MAIL_FROM_NAME`.
 
 ### Integração com Cliente NestJS (Exemplo)
 
@@ -211,6 +224,9 @@ As configurações utilizam o injetor do NestJS (arquivo `app.config.ts`) de for
 | `SMTP_PORT` | Porta do serviço SMTP | `1025` |
 | `SMTP_USER` / `SMTP_PASS` | Credenciais do provedor SMTP | *vazio em dev* |
 | `SMTP_FROM` | Endereço do remetente | `noreply@empresa.com` |
+| `MAIL_FROM` | Endereço do remetente padrão (precedência sobre `SMTP_FROM`) | `noreply@empresa.com` |
+| `MAIL_FROM_NAME` | Nome de exibição do remetente padrão (precedência sobre `SMTP_FROM_NAME`) | `Central de Notificações` |
+| `EMAIL_SENDERS_FILE` | Caminho opcional para sobrescrever `src/infrastructure/config/senders.json` | *vazio (usa o arquivo do repo)* |
 
 ---
 
