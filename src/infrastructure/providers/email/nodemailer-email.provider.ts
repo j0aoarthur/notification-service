@@ -3,8 +3,10 @@ import type { ConfigType } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { appConfig } from '../../config/app.config';
 import { DeliveryProvider } from '../../../domain/interfaces/delivery-provider.abstract';
+import { DeliveryOptions } from '../../../domain/interfaces/delivery-options.interface';
 import { NotificationChannel } from '../../../domain/entities/notification-payload.entity';
 import { CompiledMessage } from '../../../domain/value-objects/compiled-message.value-object';
+import { EmailSender } from '../../../domain/value-objects/email-sender.value-object';
 
 /**
  * Provedor de entrega de e-mails usando Nodemailer.
@@ -34,9 +36,8 @@ export class NodemailerEmailProvider implements DeliveryProvider {
               user: smtpConfig.user,
               pass: smtpConfig.pass,
             }
-          : undefined
+          : undefined,
     });
-
   }
 
   /**
@@ -45,14 +46,20 @@ export class NodemailerEmailProvider implements DeliveryProvider {
    *
    * FR-007: Logar apenas que a tentativa ocorreu, SEM detalhes de PII.
    */
-  async send(message: CompiledMessage): Promise<void> {
+  async send(
+    message: CompiledMessage,
+    options?: DeliveryOptions,
+  ): Promise<void> {
     try {
-      console.log('Recipient: ' + message.recipient);
-      console.log('Subject: ' + message.subject);
-
       await this.transporter.sendMail({
-        // Formato padrão SMTP para nome customizado: "Nome de Exibição" <email@dominio.com>
-        from: `"${this.config.smtp.fromName}" <${this.config.smtp.from}>`,
+        // Formato padrão RFC 5322 para nome customizado: "Nome de Exibição" <email@dominio.com>
+        from: (
+          options?.sender ??
+          new EmailSender(
+            this.config.email.defaultFrom,
+            this.config.email.defaultFromName,
+          )
+        ).toRfc5322(),
         to: message.recipient,
         subject: message.subject ?? 'Sem Assunto',
         html: message.body,
@@ -61,7 +68,9 @@ export class NodemailerEmailProvider implements DeliveryProvider {
       // Não logamos message.recipient sem máscara, então não logamos no provedor
       // O Use Case logará o sucesso com os metadados mascarados.
     } catch (error) {
-      this.logger.error(`Falha no provedor SMTP. Erro: ${(error as Error).message}`);
+      this.logger.error(
+        `Falha no provedor SMTP. Erro: ${(error as Error).message}`,
+      );
       throw error;
     }
   }

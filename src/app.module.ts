@@ -6,6 +6,8 @@ import { NotificationController } from './presentation/controllers/notification.
 import { ProcessNotificationUseCase } from './application/use-cases/process-notification.use-case';
 import { TemplateEngine } from './domain/interfaces/template-engine.abstract';
 import { HandlebarsTemplateEngine } from './infrastructure/template-engine/handlebars-template-engine.service';
+import { SenderRegistry } from './domain/interfaces/sender-registry.abstract';
+import { FileSenderRegistry } from './infrastructure/senders/file-sender-registry.service';
 import { DeliveryProviderRegistry } from './application/services/delivery-provider-registry.service';
 import { NodemailerEmailProvider } from './infrastructure/providers/email/nodemailer-email.provider';
 import { LogSmsProvider } from './infrastructure/providers/sms/log-sms.provider';
@@ -35,16 +37,18 @@ import { MetricsModule } from './infrastructure/metrics/metrics.module';
       provide: TemplateEngine,
       useClass: HandlebarsTemplateEngine,
     },
-    
+    {
+      provide: SenderRegistry,
+      useClass: FileSenderRegistry,
+    },
+
     // Providers concretos registrados individualmente
     NodemailerEmailProvider,
     LogSmsProvider,
     {
       provide: DeliveryProviderRegistry,
-      useFactory: (
-        email: NodemailerEmailProvider,
-        sms: LogSmsProvider,
-      ) => new DeliveryProviderRegistry([email, sms]),
+      useFactory: (email: NodemailerEmailProvider, sms: LogSmsProvider) =>
+        new DeliveryProviderRegistry([email, sms]),
       inject: [NodemailerEmailProvider, LogSmsProvider],
     },
   ],

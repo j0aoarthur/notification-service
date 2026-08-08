@@ -2,6 +2,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsObject,
+  IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
@@ -55,4 +56,17 @@ export class SendNotificationDTO {
   @IsObject({ message: 'As variáveis devem ser um objeto.' })
   @Type(() => Object)
   variables!: Record<string, unknown>;
+
+  /**
+   * Identificador da identidade de remetente a usar (opcional).
+   * Ausente ⇒ usa o remetente padrão do serviço. Deve existir no registry
+   * de src/infrastructure/config/senders.json ou ser 'default'.
+   */
+  @IsOptional()
+  @IsString()
+  @Matches(/^[a-z0-9-]+$/, {
+    message:
+      'O senderId deve conter apenas letras minúsculas, números e hífens.',
+  })
+  senderId?: string;
 }

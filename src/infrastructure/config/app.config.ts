@@ -1,5 +1,4 @@
 import { registerAs } from '@nestjs/config';
-import { from } from 'rxjs';
 
 /**
  * Schema de configuração da aplicação.
@@ -11,12 +10,8 @@ export const appConfig = registerAs('app', () => ({
     queue: process.env['RABBITMQ_QUEUE'] ?? 'notifications_queue',
     retryQueue:
       process.env['RABBITMQ_RETRY_QUEUE'] ?? 'notifications_retry_queue',
-    deadQueue:
-      process.env['RABBITMQ_DEAD_QUEUE'] ?? 'notifications_dead_queue',
-    retryTtlMs: parseInt(
-      process.env['RABBITMQ_RETRY_TTL_MS'] ?? '30000',
-      10,
-    ),
+    deadQueue: process.env['RABBITMQ_DEAD_QUEUE'] ?? 'notifications_dead_queue',
+    retryTtlMs: parseInt(process.env['RABBITMQ_RETRY_TTL_MS'] ?? '30000', 10),
     maxRetries: parseInt(process.env['RABBITMQ_MAX_RETRIES'] ?? '5', 10),
   },
   smtp: {
@@ -26,6 +21,17 @@ export const appConfig = registerAs('app', () => ({
     pass: process.env['SMTP_PASS'] ?? '',
     from: process.env['SMTP_FROM'] ?? 'noreply@notification-service.local',
     fromName: process.env['SMTP_FROM_NAME'] ?? 'notification-service.local',
+  },
+  email: {
+    defaultFrom:
+      process.env['MAIL_FROM'] ??
+      process.env['SMTP_FROM'] ??
+      'noreply@notification-service.local',
+    defaultFromName:
+      process.env['MAIL_FROM_NAME'] ??
+      process.env['SMTP_FROM_NAME'] ??
+      'notification-service.local',
+    sendersFile: process.env['EMAIL_SENDERS_FILE'] ?? '',
   },
 }));
 

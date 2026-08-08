@@ -1,6 +1,8 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { SendNotificationDTO } from '../dtos/send-notification.dto';
 import { TemplateEngine } from '../../domain/interfaces/template-engine.abstract';
+import { SenderRegistry } from '../../domain/interfaces/sender-registry.abstract';
+import { NotificationChannel } from '../../domain/entities/notification-payload.entity';
 import { DeliveryProviderRegistry } from '../services/delivery-provider-registry.service';
 
 /**
@@ -25,6 +27,7 @@ export class ProcessNotificationUseCase {
   constructor(
     private readonly templateEngine: TemplateEngine,
     private readonly registry: DeliveryProviderRegistry,
+    private readonly senderRegistry: SenderRegistry,
   ) {}
 
   /**
@@ -57,7 +60,13 @@ export class ProcessNotificationUseCase {
 
     // [US3 - Phase 5]: Despachar a mensagem
     const provider = this.registry.resolve(dto.channel);
-    await provider.send(compiledMessage);
+
+    if (dto.channel === NotificationChannel.EMAIL) {
+      const sender = this.senderRegistry.resolve(dto.senderId);
+      await provider.send(compiledMessage, { sender });
+    } else {
+      await provider.send(compiledMessage);
+    }
 
     this.logger.log(
       `Mensagem entregue com sucesso via provider | channel: ${dto.channel}`,
