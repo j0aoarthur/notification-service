@@ -3,6 +3,11 @@
 Este é o guia definitivo para implementar, integrar e operar o **Notification Service**. 
 Um microserviço orientado a eventos (Event-Driven Architecture) responsável por abstrair e centralizar o envio de notificações multiplataforma (E-mail, SMS, etc.).
 
+> [!NOTE]
+> Vai colocar isto em produção numa VPS, servindo várias aplicações
+> clientes? Veja também o
+> [Guia de Integração em VPS — Múltiplas Aplicações](./vps-integration-guide.md).
+
 ---
 
 ## 1. Visão Geral e Arquitetura
