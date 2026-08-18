@@ -7,6 +7,8 @@ Um microserviço orientado a eventos (Event-Driven Architecture) responsável po
 > Vai colocar isto em produção numa VPS, servindo várias aplicações
 > clientes? Veja também o
 > [Guia de Integração em VPS — Múltiplas Aplicações](./vps-integration-guide.md).
+> Para um passo a passo completo de como integrar um novo cliente (do ambiente local até a VPS), veja o
+> [Guia de Onboarding de Cliente](./client-onboarding-guide.md).
 
 ---
 
@@ -17,7 +19,7 @@ O serviço segue os princípios do **Event-Driven Architecture (EDA)** e da **Cl
 *   **Domínio**: Entidades puras (`NotificationPayload`), *value-objects* e interfaces invertidas de provedores.
 *   **Aplicação**: Casos de uso de orquestração e **Registry/Strategy Pattern** para resolver qual provedor de entrega usar sem acoplar regras pesadas ao fluxo principal.
 *   **Apresentação**: `NotificationController` como consumidor nativo da mensageria (RabbitMQ).
-*   **Infraestrutura**: Motores de templates (Handlebars + front-matter), conexões (amqplib) e os provedores concretos (`NodemailerEmailProvider`, `LogSmsProvider`).
+*   **Infraestrutura**: Motores de templates (Handlebars + front-matter), conexões (amqplib) e os provedores concretos (`NodemailerEmailProvider`, `ResendEmailProvider`, `LogSmsProvider`).
 
 ### O Fluxo (Topologia)
 
@@ -120,9 +122,12 @@ O campo `senderId` nunca aceita um endereço de e-mail livre — apenas um ident
 
 ```json
 {
-  "suporte": { "address": "suporte@empresa.com", "name": "Equipe de Suporte" }
+  "suporte": { "address": "suporte@empresa.com", "name": "Equipe de Suporte" },
+  "noreply": { "address": "noreply@empresa.com" }
 }
 ```
+
+O campo `name` é **opcional** — quando omitido, o cabeçalho `From` conterá apenas o endereço (sem nome de exibição).
 
 Se `senderId` for omitido, ou for `"default"` sem entrada correspondente no arquivo, o serviço usa o remetente padrão configurado via `MAIL_FROM`/`MAIL_FROM_NAME`.
 
@@ -240,9 +245,10 @@ As configurações utilizam o injetor do NestJS (arquivo `app.config.ts`) de for
 | `SMTP_HOST` | Host do provedor SMTP (Sendgrid, SES, etc) | `localhost` |
 | `SMTP_PORT` | Porta do serviço SMTP | `1025` |
 | `SMTP_USER` / `SMTP_PASS` | Credenciais do provedor SMTP | *vazio em dev* |
-| `SMTP_FROM` | Endereço do remetente | `noreply@empresa.com` |
-| `MAIL_FROM` | Endereço do remetente padrão (precedência sobre `SMTP_FROM`) | `noreply@empresa.com` |
-| `MAIL_FROM_NAME` | Nome de exibição do remetente padrão (precedência sobre `SMTP_FROM_NAME`) | `Central de Notificações` |
+| `SMTP_FROM` | Endereço do remetente padrão para o provedor SMTP (fallback de `MAIL_FROM`) | `noreply@empresa.com` |
+| `SMTP_FROM_NAME` | Nome de exibição padrão para o provedor SMTP (fallback de `MAIL_FROM_NAME`) | `Sistema de Notificações` |
+| `MAIL_FROM` | Endereço do remetente padrão — **tem precedência sobre `SMTP_FROM`**. Usado por ambos os provedores (`smtp` e `resend`). | `noreply@empresa.com` |
+| `MAIL_FROM_NAME` | Nome de exibição do remetente padrão — **tem precedência sobre `SMTP_FROM_NAME`**. | `Central de Notificações` |
 | `EMAIL_SENDERS_FILE` | Caminho opcional para sobrescrever `src/infrastructure/config/senders.json` | *vazio (usa o arquivo do repo)* |
 | `EMAIL_PROVIDER` | Provedor de entrega de e-mail: `smtp` ou `resend` | `smtp` |
 | `RESEND_API_KEY` | API key do Resend. **Obrigatório** quando `EMAIL_PROVIDER=resend` | *vazio* |
