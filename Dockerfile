@@ -18,9 +18,10 @@ CMD ["npm", "run", "start:dev"]
 # Estágio 3: Build de produção
 # =============================================================================
 FROM base AS builder
-RUN npm ci --only=production
+RUN npm ci
 COPY . .
 RUN npm run build
+RUN npm prune --omit=dev
 
 # =============================================================================
 # Estágio 4: Produção (imagem final enxuta)
