@@ -68,6 +68,10 @@ export class RabbitmqSetupService implements OnApplicationBootstrap {
       this.logger.error(
         `Failed to assert RabbitMQ topology: ${(error as Error).message}`,
       );
+      // Fail-fast: topologia incompleta significa que mensagens com nack
+      // não terão para onde ir (sem DLX/DLQ configurados). É melhor derrubar
+      // o boot do que subir em estado silenciosamente quebrado.
+      throw error;
     }
   }
 }

@@ -1,5 +1,6 @@
 import { NotificationChannel } from '../entities/notification-payload.entity';
 import { CompiledMessage } from '../value-objects/compiled-message.value-object';
+import { DeliveryOptions } from './delivery-options.interface';
 
 /**
  * Contrato abstrato que todo adaptador de entrega deve implementar.
@@ -21,7 +22,10 @@ export abstract class DeliveryProvider {
    *
    * @throws {Error} Se a entrega falhar (o mecanismo de retry via DLX tratará a falha)
    */
-  abstract send(message: CompiledMessage): Promise<void>;
+  abstract send(
+    message: CompiledMessage,
+    options?: DeliveryOptions,
+  ): Promise<void>;
 
   /**
    * Verifica se o provider está operacional.

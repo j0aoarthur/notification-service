@@ -7,12 +7,14 @@
  *   node scripts/publish.js                          # Usa os valores padrão (welcome-email, EMAIL)
  *   node scripts/publish.js --template welcome-sms --channel SMS --recipient +5511999998888
  *   node scripts/publish.js --template welcome-email --channel EMAIL --recipient joao@coop.com --var name="João"
+ *   node scripts/publish.js --template welcome-email --sender suporte --recipient joao@coop.com
  *
  * Opções:
  *   --template   ID do template (default: welcome-email)
  *   --channel    Canal de entrega: EMAIL ou SMS (default: EMAIL)
  *   --recipient  Destinatário (default: user@cooperativa.com)
  *   --var        Variáveis do template no formato chave=valor (pode repetir)
+ *   --sender     Identificador da identidade de remetente (senderId, opcional)
  *   --uri        URI do RabbitMQ (default: amqp://guest:guest@localhost:5672)
  *   --queue      Nome da fila (default: notifications_queue)
  */
@@ -27,6 +29,7 @@ function parseArgs(argv) {
     uri: process.env.RABBITMQ_URI || 'amqp://guest:guest@localhost:5672',
     queue: process.env.RABBITMQ_QUEUE || 'notifications_queue',
     variables: {},
+    sender: undefined,
   };
 
   for (let i = 2; i < argv.length; i++) {
@@ -46,6 +49,9 @@ function parseArgs(argv) {
       case '--queue':
         args.queue = argv[++i];
         break;
+      case '--sender':
+        args.sender = argv[++i];
+        break;
       case '--var': {
         const [key, ...rest] = argv[++i].split('=');
         args.variables[key] = rest.join('=');
@@ -60,6 +66,7 @@ Opções:
   --channel    Canal: EMAIL ou SMS (default: EMAIL)
   --recipient  Destinatário (default: user@cooperativa.com)
   --var        Variável chave=valor (pode repetir)
+  --sender     Identificador da identidade de remetente (senderId, opcional)
   --uri        URI do RabbitMQ (default: amqp://guest:guest@localhost:5672)
   --queue      Nome da fila (default: notifications_queue)
 
@@ -67,6 +74,7 @@ Exemplos:
   node scripts/publish.js
   node scripts/publish.js --template welcome-email --var name="João Cooperado"
   node scripts/publish.js --template welcome-sms --channel SMS --recipient +5511999998888 --var name="Maria"
+  node scripts/publish.js --template welcome-email --sender suporte --recipient joao@coop.com
         `);
         process.exit(0);
     }
@@ -88,20 +96,29 @@ async function main() {
   console.log(`   Canal:       ${args.channel}`);
   console.log(`   Destinatário: ${args.recipient}`);
   console.log(`   Variáveis:   ${JSON.stringify(args.variables)}`);
+  if (args.sender) {
+    console.log(`   Remetente:   ${args.sender}`);
+  }
   console.log(`   Fila:        ${args.queue}`);
   console.log('');
 
   const conn = await amqp.connect(args.uri);
   const ch = await conn.createChannel();
 
+  const data = {
+    templateId: args.template,
+    channel: args.channel,
+    recipient: args.recipient,
+    variables: args.variables,
+  };
+
+  if (args.sender) {
+    data.senderId = args.sender;
+  }
+
   const message = JSON.stringify({
     pattern: args.queue,
-    data: {
-      templateId: args.template,
-      channel: args.channel,
-      recipient: args.recipient,
-      variables: args.variables,
-    },
+    data,
   });
 
   ch.sendToQueue(args.queue, Buffer.from(message), {
