@@ -1,0 +1,368 @@
+---
+subject: "{{eventName}} — {{#if tickets.[1]}}Seus ingressos estão confirmados{{else}}Seu ingresso está confirmado{{/if}}! 🎟️"
+---
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="dark">
+  <meta name="supported-color-schemes" content="dark">
+  <title>{{eventName}}</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style type="text/css">
+    body { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+    table { border-collapse: collapse !important; }
+    img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+    a { text-decoration: none; }
+    @media screen and (max-width: 620px) {
+      .psf-wrapper { width: 100% !important; }
+      .psf-pad { padding-left: 20px !important; padding-right: 20px !important; }
+      .psf-title { font-size: 24px !important; }
+      .psf-cta a { display: block !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; width:100%; background-color:#0B0E1E; -webkit-font-smoothing:antialiased; font-family:'Inter', Arial, Helvetica, sans-serif;">
+
+  {{!-- ============ PREHEADER (texto de preview, oculto no corpo) ============ --}}
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#0B0E1E; opacity:0;">
+    {{#if isCourtesy}}Você recebeu {{#if tickets.[1]}}{{tickets.length}} ingressos{{else}}um ingresso{{/if}} para {{eventName}}. Veja {{#if tickets.[1]}}os QR Codes na carteira digital{{else}}o QR Code de entrada neste e-mail{{/if}}.{{else}}Pagamento confirmado. {{#if tickets.[1]}}Seus {{tickets.length}} ingressos para {{eventName}} estão na carteira digital.{{else}}Seu ingresso para {{eventName}} e o QR Code de entrada estão neste e-mail.{{/if}}{{/if}}
+    &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  </div>
+
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#0B0E1E;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="psf-wrapper" style="width:600px; max-width:600px; background-color:#12161F;">
+
+          {{!-- ==================== SEÇÃO 1 — HEADER ==================== --}}
+          <tr>
+            <td bgcolor="{{primaryColor}}" height="3" style="height:3px; line-height:3px; font-size:0; background-color:{{primaryColor}};">&nbsp;</td>
+          </tr>
+          <tr>
+            <td align="center" bgcolor="#0B0E1E" class="psf-pad" style="padding:28px 24px 32px 24px; background-color:#0B0E1E; background-image:linear-gradient(135deg, #0B0E1E 0%, #1B0F2E 100%); border-bottom:1px solid rgba(234, 179, 8, 0.15);">
+
+              {{!-- PLATAFORMA — quem de fato envia o e-mail.
+                   Hoje é texto; se platformLogoUrl for enviado no payload, vira imagem sem alterar o template. --}}
+              {{#if platformLogoUrl}}
+                <img src="{{platformLogoUrl}}" width="72" alt="Atlee" style="display:block; margin:0 auto; width:72px; max-width:72px; height:auto; border:0;">
+              {{else}}
+                <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; line-height:16px; letter-spacing:4px; text-transform:uppercase; color:#64748B;">Atlee</p>
+              {{/if}}
+
+              {{!-- Divisória curta: separa plataforma de tenant sem criar uma segunda barra forte --}}
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:18px auto;">
+                <tr>
+                  <td width="32" height="1" style="width:32px; height:1px; line-height:1px; font-size:0; background-color:rgba(255,255,255,0.12);">&nbsp;</td>
+                </tr>
+              </table>
+
+              {{!-- ATLÉTICA (tenant) — logo é opcional, nome sempre aparece --}}
+              {{#if tenantLogoUrl}}
+              <img src="{{tenantLogoUrl}}" width="96" alt="" style="display:block; margin:0 auto 14px auto; width:96px; max-width:96px; height:auto; border:0;">
+              {{/if}}
+              <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:700; line-height:22px; letter-spacing:3px; text-transform:uppercase; color:{{primaryColor}};">{{tenantName}}</p>
+            </td>
+          </tr>
+
+          {{!-- ==================== SEÇÃO 2 — TÍTULO + SUBTÍTULO ==================== --}}
+          <tr>
+            <td align="center" bgcolor="#0F1420" class="psf-pad" style="padding:36px 24px 32px 24px; background-color:#0F1420;">
+              {{#if isCourtesy}}
+                <p class="psf-title" style="margin:0 0 10px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:28px; font-weight:700; line-height:34px; color:#F1F5F9;">{{#if tickets.[1]}}Ingressos Cortesia 🎁{{else}}Ingresso Cortesia 🎁{{/if}}</p>
+                <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:400; line-height:22px; color:#94A3B8;">{{#if tickets.[1]}}Você recebeu {{tickets.length}} ingressos especiais{{else}}Você recebeu um ingresso especial{{/if}}</p>
+              {{else}}
+                <p class="psf-title" style="margin:0 0 10px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:28px; font-weight:700; line-height:34px; color:#F1F5F9;">Compra Confirmada! 🎉</p>
+                <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:400; line-height:22px; color:#94A3B8;">{{#if tickets.[1]}}Seus {{tickets.length}} ingressos já estão disponíveis{{else}}Seu ingresso já está disponível{{/if}}</p>
+              {{/if}}
+            </td>
+          </tr>
+
+          {{!-- ==================== SEÇÃO 3 — CONTEÚDO ==================== --}}
+          <tr>
+            <td bgcolor="#12161F" class="psf-pad" style="padding:32px 24px 8px 24px; background-color:#12161F;">
+
+              {{!-- Saudação --}}
+              <p style="margin:0 0 12px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:17px; font-weight:700; line-height:24px; color:#F1F5F9;">Olá, {{studentName}}!</p>
+              <p style="margin:0 0 28px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:400; line-height:26px; color:#94A3B8;">
+                {{#if isCourtesy}}
+                  {{#if tickets.[1]}}Foram emitidos {{tickets.length}} ingressos cortesia para você. Eles valem exatamente como ingressos comprados — os QR Codes estão na sua carteira digital.{{else}}Um ingresso cortesia foi emitido para você. Ele vale exatamente como um ingresso comprado — é só apresentar o QR Code abaixo na entrada.{{/if}}
+                {{else}}
+                  {{#if tickets.[1]}}Seu pagamento foi confirmado e os {{tickets.length}} ingressos já estão no seu nome. Cada um tem um QR Code próprio, disponível na carteira digital.{{else}}Seu pagamento foi confirmado e o ingresso já está no seu nome. Guarde este e-mail: o QR Code abaixo é a sua entrada no evento.{{/if}}
+                {{/if}}
+              </p>
+
+              {{!-- ---------- CARD DE PAGAMENTO (oculto em cortesia) ---------- --}}
+              {{#unless isCourtesy}}
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%; background-color:#141B33; border:1px solid rgba(255,255,255,0.05); border-radius:16px;">
+                <tr>
+                  <td style="padding:24px;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
+                      <tr>
+                        <td style="padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                          <p style="margin:0 0 6px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; line-height:14px; letter-spacing:2px; text-transform:uppercase; color:{{primaryColor}};">Pedido</p>
+                          <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:600; line-height:22px; color:#E2E8F0;">#{{orderNumber}}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:16px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                          <p style="margin:0 0 6px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; line-height:14px; letter-spacing:2px; text-transform:uppercase; color:{{primaryColor}};">Valor Total</p>
+                          <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:22px; font-weight:700; line-height:28px; color:{{primaryColor}};">{{totalValue}}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:16px;">
+                          <p style="margin:0 0 6px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; line-height:14px; letter-spacing:2px; text-transform:uppercase; color:{{primaryColor}};">Pagamento</p>
+                          <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:400; line-height:22px; color:#E2E8F0;">{{billingType}}</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <div style="line-height:16px; font-size:0;">&nbsp;</div>
+              {{/unless}}
+
+              {{!-- ---------- CARD DO EVENTO (sempre visível) ---------- --}}
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%; background-color:#141B33; border:1px solid rgba(255,255,255,0.05); border-radius:16px;">
+                <tr>
+                  <td style="padding:24px;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
+                      <tr>
+                        <td style="padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                          <p style="margin:0 0 6px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; line-height:14px; letter-spacing:2px; text-transform:uppercase; color:{{primaryColor}};">Evento</p>
+                          <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:18px; font-weight:700; line-height:26px; color:#F1F5F9;">{{eventName}}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:16px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                          <p style="margin:0 0 6px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; line-height:14px; letter-spacing:2px; text-transform:uppercase; color:{{primaryColor}};">Data</p>
+                          <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:400; line-height:22px; color:#E2E8F0;">{{eventDate}}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top:16px;">
+                          <p style="margin:0 0 6px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; line-height:14px; letter-spacing:2px; text-transform:uppercase; color:{{primaryColor}};">Local</p>
+                          <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:400; line-height:22px; color:#E2E8F0;">{{eventLocation}}</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <div style="line-height:16px; font-size:0;">&nbsp;</div>
+
+              {{!-- ---------- INGRESSOS ----------
+                   Guard nativo: tickets.[1] só existe quando há 2+ ingressos no pedido.
+                   Handlebars não tem helper de comparação registrado (regra 8 do guia),
+                   então o acesso por índice é o que permite distinguir 1 de vários. --}}
+              {{#if tickets.[1]}}
+
+              {{!-- ===== VÁRIOS INGRESSOS: lista sem QR + caminho para a carteira ===== --}}
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%; background-color:#141B33; border:1px solid rgba(255,255,255,0.05); border-radius:16px;">
+                <tr>
+                  <td style="padding:24px;">
+                    <p style="margin:0 0 6px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; line-height:14px; letter-spacing:2px; text-transform:uppercase; color:{{primaryColor}};">Seus Ingressos</p>
+                    <p style="margin:0 0 20px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:22px; font-weight:700; line-height:28px; color:#F1F5F9;">{{tickets.length}} ingressos</p>
+
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
+                      {{#each tickets}}
+                      <tr>
+                        <td style="padding-top:{{#if @first}}0{{else}}14px{{/if}}; padding-bottom:14px; {{#unless @last}}border-bottom:1px solid rgba(255,255,255,0.05);{{/unless}}">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
+                            <tr>
+                              <td align="left" style="vertical-align:middle; padding-right:12px;">
+                                <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:15px; font-weight:600; line-height:22px; color:#E2E8F0;">Ingresso {{this.ticketNumber}}</p>
+                              </td>
+                              <td align="right" style="vertical-align:middle; white-space:nowrap;">
+                                <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="right">
+                                  <tr>
+                                    <td bgcolor="{{../accentColor}}" style="padding:5px 12px; border-radius:12px; background-color:{{../accentColor}};">
+                                      <span style="font-family:'Inter', Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; line-height:18px; color:#FFFFFF;">{{this.ticketTypeName}}</span>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      {{/each}}
+                    </table>
+
+                    {{!-- Cada ingresso tem um QR próprio e é invalidado no primeiro scan.
+                         Mostrar vários códigos no e-mail levaria a apresentar o errado na porta. --}}
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%; margin-top:18px;">
+                      <tr>
+                        <td style="padding:14px 16px; background-color:#0F1420; border-left:3px solid {{secondaryColor}}; border-radius:12px;">
+                          <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:14px; font-weight:400; line-height:22px; color:#94A3B8;">Cada ingresso tem um QR Code próprio. Abra a carteira digital para ver todos e apresentar o certo na entrada.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <div style="line-height:24px; font-size:0;">&nbsp;</div>
+
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="psf-cta" style="width:100%;">
+                <tr>
+                  <td align="center" bgcolor="{{primaryColor}}" style="border-radius:12px; background-color:{{primaryColor}};">
+                    <a href="{{walletUrl}}" target="_blank" style="display:block; padding:15px 32px; min-height:18px; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:16px; font-weight:700; line-height:18px; color:#0B0E1E; text-decoration:none; text-align:center; border-radius:12px;">Ver Meus Ingressos</a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:20px 0 0 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:400; line-height:22px; color:#64748B; text-align:center;">Abra a carteira antes de chegar ao evento: os ingressos ficam disponíveis mesmo sem internet na porta.</p>
+
+              {{else}}
+
+              {{!-- ===== INGRESSO ÚNICO: QR direto no e-mail ===== --}}
+              {{#with tickets.[0]}}
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%; background-color:#141B33; border:1px solid rgba(255,255,255,0.05); border-radius:16px;">
+                <tr>
+                  <td align="center" style="padding:28px 24px;">
+                    <p style="margin:0 0 14px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; line-height:14px; letter-spacing:2px; text-transform:uppercase; color:{{../primaryColor}};">Seu Ingresso</p>
+
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 18px auto;">
+                      <tr>
+                        <td bgcolor="{{../accentColor}}" style="padding:6px 14px; border-radius:12px; background-color:{{../accentColor}};">
+                          <span style="font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:700; line-height:18px; color:#FFFFFF;">{{this.ticketTypeName}}</span>
+                        </td>
+                      </tr>
+                    </table>
+
+                    {{!-- QR gerado sob demanda pelo QuickChart a partir do hash.
+                         size=400 renderizado a 200px = nitidez em tela retina (a câmera lê da tela do aluno).
+                         margin=2 garante a zona de silêncio que o leitor precisa para reconhecer o código.
+                         Fundo branco: QR escuro sobre fundo escuro não é lido pela câmera. --}}
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td bgcolor="#FFFFFF" align="center" style="padding:16px; background-color:#FFFFFF; border-radius:16px;">
+                          <img src="https://quickchart.io/qr?text={{this.qrCodeHash}}&amp;size=400&amp;margin=2" width="200" height="200" alt="QR Code do seu ingresso" style="display:block; width:200px; height:200px; border:0; outline:none;">
+                        </td>
+                      </tr>
+                    </table>
+
+                    <p style="margin:18px 0 0 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:14px; font-weight:400; line-height:22px; color:#94A3B8;">Apresente este QR Code na entrada do evento</p>
+                    <p style="margin:10px 0 0 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:400; line-height:20px; color:#64748B;">Não está vendo o código? Autorize a exibição de imagens no seu e-mail ou abra o ingresso no portal.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <div style="line-height:24px; font-size:0;">&nbsp;</div>
+
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="psf-cta" style="width:100%;">
+                <tr>
+                  <td align="center" bgcolor="{{../primaryColor}}" style="border-radius:12px; background-color:{{../primaryColor}};">
+                    <a href="{{this.ticketUrl}}" target="_blank" style="display:block; padding:15px 32px; min-height:18px; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:16px; font-weight:700; line-height:18px; color:#0B0E1E; text-decoration:none; text-align:center; border-radius:12px;">Ver Meu Ingresso</a>
+                  </td>
+                </tr>
+              </table>
+              {{/with}}
+
+              <p style="margin:20px 0 0 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:400; line-height:22px; color:#64748B; text-align:center;">O ingresso também fica salvo na sua carteira digital no portal, mesmo sem internet no dia do evento.</p>
+
+              {{/if}}
+
+              <div style="line-height:24px; font-size:0;">&nbsp;</div>
+            </td>
+          </tr>
+
+          {{!-- ==================== SEÇÃO 4 — RODAPÉ BRANDED ==================== --}}
+          <tr>
+            <td align="center" bgcolor="#0D1117" class="psf-pad" style="padding:32px 24px 24px 24px; background-color:#0D1117; border-top:1px solid rgba(255,255,255,0.05);">
+              <p style="margin:0 0 8px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:700; line-height:18px; letter-spacing:1px; text-transform:uppercase; color:{{primaryColor}};">{{tenantName}}</p>
+              <p style="margin:0 0 20px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:12px; font-weight:400; font-style:italic; line-height:18px; color:#64748B;">Onde a tradição encontra a festa</p>
+
+              {{!-- Redes sociais da atlética — cada uma só aparece se vier no payload --}}
+              {{#if instagramUrl}}
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 18px auto;">
+                <tr>
+                  <td style="padding:0 10px;">
+                    <a href="{{instagramUrl}}" target="_blank" style="font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:600; line-height:18px; color:{{secondaryColor}}; text-decoration:none;">📷&nbsp;Instagram</a>
+                  </td>
+                  {{#if whatsappNumber}}
+                  <td style="padding:0 10px;">
+                    <a href="https://wa.me/{{whatsappNumber}}" target="_blank" style="font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:600; line-height:18px; color:{{secondaryColor}}; text-decoration:none;">💬&nbsp;WhatsApp</a>
+                  </td>
+                  {{/if}}
+                </tr>
+              </table>
+              {{else}}
+                {{#if whatsappNumber}}
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 18px auto;">
+                  <tr>
+                    <td style="padding:0 10px;">
+                      <a href="https://wa.me/{{whatsappNumber}}" target="_blank" style="font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:600; line-height:18px; color:{{secondaryColor}}; text-decoration:none;">💬&nbsp;WhatsApp</a>
+                    </td>
+                  </tr>
+                </table>
+                {{/if}}
+              {{/if}}
+
+              <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:13px; font-weight:400; line-height:20px; color:#94A3B8;">
+                Precisa de ajuda?
+                {{#if whatsappNumber}}
+                  <a href="https://wa.me/{{whatsappNumber}}" target="_blank" style="color:{{secondaryColor}}; text-decoration:none; font-weight:600;">Fale conosco</a>
+                {{else}}
+                  <a href="mailto:{{recipientEmail}}" style="color:{{secondaryColor}}; text-decoration:none; font-weight:600;">Fale conosco</a>
+                {{/if}}
+              </p>
+            </td>
+          </tr>
+
+          {{!-- Faixa da plataforma: fecha o e-mail com a Atlee, espelhando o header --}}
+          <tr>
+            <td align="center" bgcolor="#0D1117" class="psf-pad" style="padding:0 24px 26px 24px; background-color:#0D1117;">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
+                <tr>
+                  <td height="1" style="height:1px; line-height:1px; font-size:0; background-color:rgba(255,255,255,0.05);">&nbsp;</td>
+                </tr>
+              </table>
+
+              {{#if platformLogoUrl}}
+                <img src="{{platformLogoUrl}}" width="56" alt="Atlee" style="display:block; margin:20px auto 8px auto; width:56px; max-width:56px; height:auto; border:0;">
+              {{else}}
+                <p style="margin:20px 0 8px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; line-height:16px; letter-spacing:4px; text-transform:uppercase; color:#94A3B8;">Atlee</p>
+              {{/if}}
+              <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:12px; font-weight:400; line-height:18px; color:#64748B;">A plataforma que a {{tenantName}} usa para ingressos, loja e eventos.</p>
+            </td>
+          </tr>
+
+          {{!-- ==================== SEÇÃO 5 — RODAPÉ LEGAL ==================== --}}
+          <tr>
+            <td align="center" bgcolor="#0D1117" class="psf-pad" style="padding:0 24px 32px 24px; background-color:#0D1117;">
+              <p style="margin:0 0 10px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:400; line-height:16px; color:#334155;">
+                Enviado por Atlee em nome de {{tenantName}}<br>Brasil
+              </p>
+              <p style="margin:0 0 10px 0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:400; line-height:16px; color:#334155;">
+                Este e-mail foi enviado para {{recipientEmail}}
+              </p>
+              <p style="margin:0; font-family:'Inter', Arial, Helvetica, sans-serif; font-size:11px; font-weight:400; line-height:16px; color:#334155;">
+                E-mail transacional — você recebe por ter uma conta ativa no portal.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
