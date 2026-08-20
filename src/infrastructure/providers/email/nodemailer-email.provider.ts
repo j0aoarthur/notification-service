@@ -11,7 +11,9 @@ import { EmailSender } from '../../../domain/value-objects/email-sender.value-ob
 /**
  * Provedor de entrega de e-mails usando Nodemailer.
  *
- * Utiliza as configurações SMTP definidas em AppConfig.
+ * Utiliza as configurações SMTP (`host`, `port`, `user`, `pass`) e o
+ * remetente padrão (`email.defaultFrom` / `email.defaultFromName`) definidos
+ * em `appConfig`.
  *
  * Referência: specs/001-eda-notification-service/spec.md § User Story 3
  */

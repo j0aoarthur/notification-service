@@ -245,10 +245,8 @@ As configurações utilizam o injetor do NestJS (arquivo `app.config.ts`) de for
 | `SMTP_HOST` | Host do provedor SMTP (Sendgrid, SES, etc) | `localhost` |
 | `SMTP_PORT` | Porta do serviço SMTP | `1025` |
 | `SMTP_USER` / `SMTP_PASS` | Credenciais do provedor SMTP | *vazio em dev* |
-| `SMTP_FROM` | Endereço do remetente padrão para o provedor SMTP (fallback de `MAIL_FROM`) | `noreply@empresa.com` |
-| `SMTP_FROM_NAME` | Nome de exibição padrão para o provedor SMTP (fallback de `MAIL_FROM_NAME`) | `Sistema de Notificações` |
-| `MAIL_FROM` | Endereço do remetente padrão — **tem precedência sobre `SMTP_FROM`**. Usado por ambos os provedores (`smtp` e `resend`). | `noreply@empresa.com` |
-| `MAIL_FROM_NAME` | Nome de exibição do remetente padrão — **tem precedência sobre `SMTP_FROM_NAME`**. | `Central de Notificações` |
+| `MAIL_FROM` | Endereço do remetente padrão. Usado por ambos os provedores (`smtp` e `resend`). **Obrigatório em produção.** | `noreply@empresa.com` |
+| `MAIL_FROM_NAME` | Nome de exibição do remetente padrão. | `Central de Notificações` |
 | `EMAIL_SENDERS_FILE` | Caminho opcional para sobrescrever `src/infrastructure/config/senders.json` | *vazio (usa o arquivo do repo)* |
 | `EMAIL_PROVIDER` | Provedor de entrega de e-mail: `smtp` ou `resend` | `smtp` |
 | `RESEND_API_KEY` | API key do Resend. **Obrigatório** quando `EMAIL_PROVIDER=resend` | *vazio* |

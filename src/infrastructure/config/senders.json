@@ -1,6 +1,10 @@
 {
-    "atlee":{
-        "address": "contato@atlee.com.br",
-        "name": "Atlee"
-    }
+  "atlee": {
+    "address": "contato@atlee.com.br",
+    "name": "Atlee"
+  },
+  "coop": {
+    "address": "noreply@cooperativa.com",
+    "name": "Sistema de Cooperativas"
+  }
 }
