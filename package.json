@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "publish:atlee": "node scripts/publish-atlee-examples.js",
-    "publish:coop": "node scripts/publish-coop-examples.js"
+    "publish:coop": "node scripts/publish-coop-examples.js",
+    "preview:templates": "node scripts/preview-templates.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -33,6 +34,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "gray-matter": "^4.0.3",
+    "handlebars": "^4.7.8",
     "hbs": "^4.2.1",
     "nodemailer": "^8.0.7",
     "prom-client": "^15.1.3",

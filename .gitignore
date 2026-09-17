@@ -30,5 +30,8 @@ Thumbs.db
 *.swp
 *.tmp
 
+# Preview local
+preview/
+
 # Docker
 docker-compose.override.yml
